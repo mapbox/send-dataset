@@ -1,6 +1,6 @@
 # send-dataset
 
-This is a clone of `geojsonio-cli` for the Mapbox studio dataset editor.
+This is a clone of [geojsonio-cli](https://github.com/mapbox/geojsonio-cli) for the Mapbox studio dataset editor.
 
 Shoot files from your shell to the [Mapbox Studio dataset editor](https://www.mapbox.com/studio/datasets/) for fast
 visualization and editing. This is a [node.js](http://nodejs.org) module and thus requires
@@ -8,17 +8,20 @@ node.
 
 Read or pipe a file
 
-    send-dataset map.geojson
-    send-dataset < run.geojson
+```sh
+MAPBOX_ACCESS_TOKEN=<token> send-dataset map.geojson
+MAPBOX_ACCESS_TOKEN=<token> send-dataset < run.geojson
+```
 
 Options:
 
-    --print prints the url rather than opening it
-    --domain="http://custominstancedomain.com/"
+`--print prints the url rather than opening it`
 
 ## installation
 
-    npm install -g send-dataset
+`npm install -g send-dataset`
+
+`send-dataset` requires that you have a [Mapbox API access token](https://www.mapbox.com/studio/account/tokens/) in your enviroment as `MAPBOX_ACCESS_TOKEN`. This token **MUST HAVE** the `datasets:write` scope.
 
 ## examples
 
