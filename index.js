@@ -23,16 +23,18 @@ if (argv.help || argv.h || !(argv._[0] || !tty.isatty(0))) {
 
 function openData(body) {
     if (body.length > BIG_LEN) {
-        console.error('This file is very large, and will likely display slowly on geojson.io');
+        console.error('This file is very large, and will likely display very slowly in the dataset editor');
     }
 
-    var errors = geojsonhint.hint(body.toString());
-
-    if (errors.length > 0) {
-        throw new Error(errors[0].message);
+    var geojson = null;
+    try {
+        geojson = JSON.parse(body.toString());
+    }
+    catch (err) {
+        throw err;
     }
 
-    var geojson = normalize(JSON.parse(body));
+    geojson = normalize(geojson);
 
     if (geojson.features.length === 0) {
         throw new Error('There are no features in this file');
@@ -84,7 +86,7 @@ function killDataset(dataset, err) {
     mapbox.deleteDataset(dataset.id, function(deleteErr) {
         if (deleteErr) throw deleteErr;
         throw err;
-    })
+    });
 }
 
 function displayResource(dataset) {
