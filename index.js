@@ -64,6 +64,7 @@ function openData(body) {
             throw err;
         }
         else {
+            dataset.size = body.length / 2;
             var bar = new ProgressBar('[:bar] :percent', {total: geojson.features.length, width: 20});
             bar.tick(0);
             saveBatches(dataset, batches, 0, bar);
@@ -90,8 +91,9 @@ function killDataset(dataset, err) {
 }
 
 function displayResource(dataset) {
-    (argv.print ? console.log : opener)(
-                'http://mapbox.com/studio/datasets/'+ dataset.owner + '/' + dataset.id +'/edit');
+    var ext = dataset.size < 160000000 ? '/edit' : '';
+    var url = 'http://mapbox.com/studio/datasets/'+ dataset.owner + '/' + dataset.id + ext;
+    (argv.print ? console.log : opener)(url);
 }
 
 function help() {
