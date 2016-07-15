@@ -75,7 +75,8 @@ function openData(body) {
 function saveBatches(dataset, batches, idx, bar) {
     if (batches[idx] === undefined) return displayResource(dataset);
     mapbox.batchFeatureUpdate(batches[idx], dataset.id, function(err, results) {
-        if (err) return killDataset(err);
+        if (err && err.message) return killDataset(dataset, new Error(err.message));
+        if (err) return killDataset(dataset, err);
         bar.tick(batches[idx].put.length);
         saveBatches(dataset, batches, idx+1, bar);
     });
@@ -85,7 +86,11 @@ function killDataset(dataset, err) {
     console.log('\n');
     console.error('failed to upload');
     mapbox.deleteDataset(dataset.id, function(deleteErr) {
-        if (deleteErr) throw deleteErr;
+        if (deleteErr) {
+            console.log(deleteErr.message);
+            throw deleteErr;
+        }
+        console.log(err.message);
         throw err;
     });
 }
