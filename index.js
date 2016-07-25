@@ -97,7 +97,7 @@ function killDataset(dataset, err) {
 
 function displayResource(dataset) {
     var ext = dataset.size < 160000000 ? '/edit' : '';
-    var url = 'http://mapbox.com/studio/datasets/'+ dataset.owner + '/' + dataset.id + ext;
+    var url = 'https://www.mapbox.com/studio/datasets/'+ dataset.owner + '/' + dataset.id + ext;
     (argv.print ? console.log : opener)(url);
 }
 
