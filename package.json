@@ -1,6 +1,6 @@
 {
   "name": "send-dataset",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Send geojson from your shell to the Mapbox Studio dataset editor",
   "main": "index.js",
   "scripts": {
