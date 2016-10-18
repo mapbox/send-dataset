@@ -11,6 +11,7 @@ var geojsonhint = require('geojsonhint');
 var normalize = require('geojson-normalize');
 var hat = require('hat');
 var ProgressBar = require('progress');
+var queue = require('d3-queue').queue;
 
 var argv = require('minimist')(process.argv.slice(2));
 var BIG_LEN = 5000000;
@@ -49,15 +50,6 @@ function openData(body) {
         }
     });
 
-    var batches = geojson.features.reduce(function(memo, feature) {
-        feature.id = feature.id || hat();
-        if (memo[memo.length-1].put.length === 100) {
-            memo.push({put: [], delete: []})
-        }
-        memo[memo.length-1].put.push(feature);
-        return memo;
-    }, [{put: [], delete: []}])
-
     var datastName = argv._[0] ? argv._[0] : 'From CLI ' + (new Date().toISOString());
     mapbox.createDataset({name: datastName}, function(err, dataset) {
         if (err) {
@@ -67,20 +59,45 @@ function openData(body) {
             dataset.size = body.length / 2;
             var bar = new ProgressBar('[:bar] :percent', {total: geojson.features.length, width: 20});
             bar.tick(0);
-            saveBatches(dataset, batches, 0, bar);
+            saveBatches(dataset, geojson.features, bar);
         }
     });
-}
+};
 
-function saveBatches(dataset, batches, idx, bar) {
-    if (batches[idx] === undefined) return displayResource(dataset);
-    mapbox.batchFeatureUpdate(batches[idx], dataset.id, function(err, results) {
-        if (err && err.message) return killDataset(dataset, new Error(err.message));
-        if (err) return killDataset(dataset, err);
-        bar.tick(batches[idx].put.length);
-        saveBatches(dataset, batches, idx+1, bar);
+function saveBatches(dataset, features, bar) {
+    var q = queue(17);
+    features.forEach(function(feature) {
+        q.defer(function(done) {
+            saveFeature(dataset, feature, 0, function() {
+                bar.tick(1);
+                done();
+            });     
+        });
     });
-}
+
+    q.awaitAll(function(err) {
+        if (err) console.log(err.stack);
+        if (err) return killDataset(dataset, err);
+        displayResource(dataset); 
+    });
+};
+
+var start = 0;
+var requests = 0;
+function saveFeature(dataset, feature, tries, cb) {
+    start = start || Date.now();
+    if (requestRate() >= 40) return setTimeout(function() {
+        saveFeature(dataset, feature, tries, cb);
+    }, 10);
+    requests++;
+    mapbox.insertFeature(feature, dataset.id, function(err) {
+        if (err && tries < 5) return cb(err);
+        else if (err) return setTimeout(function() {
+          saveFeature(dataset, feature, tries+1, cb);
+        }, 250);
+        cb();
+    });
+};
 
 function killDataset(dataset, err) {
     console.log('\n');
@@ -93,14 +110,19 @@ function killDataset(dataset, err) {
         console.log(err.message);
         throw err;
     });
-}
+};
 
 function displayResource(dataset) {
     var ext = dataset.size < 160000000 ? '/edit' : '';
     var url = 'http://mapbox.com/studio/datasets/'+ dataset.owner + '/' + dataset.id + ext;
     (argv.print ? console.log : opener)(url);
-}
+};
 
 function help() {
     fs.createReadStream(path.join(__dirname, 'README.md')).pipe(process.stdout);
+};
+
+function requestRate() {
+    var time = Date.now() - start;
+    return Math.ceil(requests/(time/1000));
 }

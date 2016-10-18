@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "concat-stream": "~1.0.1",
+    "d3-queue": "^3.0.3",
     "geojson-normalize": "0.0.1",
     "geojsonhint": "^1.2.1",
     "github": "~0.1.15",
