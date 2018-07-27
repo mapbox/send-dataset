@@ -25,11 +25,11 @@
     "url": "https://github.com/mapbox/send-dataset/issues"
   },
   "dependencies": {
+    "@mapbox/geojson-normalize": "^0.0.1",
+    "@mapbox/geojsonhint": "^2.1.0",
+    "@octokit/rest": "^15.9.4",
     "concat-stream": "~1.0.1",
     "d3-queue": "^3.0.3",
-    "geojson-normalize": "0.0.1",
-    "geojsonhint": "^1.2.1",
-    "github": "~0.1.15",
     "hat": "0.0.3",
     "mapbox": "^1.0.0-beta1",
     "minimist": "0.0.2",
