@@ -27,7 +27,6 @@
   "dependencies": {
     "@mapbox/geojson-normalize": "^0.0.1",
     "@mapbox/geojsonhint": "^2.1.0",
-    "@octokit/rest": "^15.9.4",
     "concat-stream": "~1.0.1",
     "d3-queue": "^3.0.3",
     "hat": "0.0.3",
