@@ -50,8 +50,8 @@ function openData(body) {
         }
     });
 
-    var datastName = argv._[0] ? argv._[0] : 'From CLI ' + (new Date().toISOString());
-    mapbox.createDataset({name: datastName}, function(err, dataset) {
+    var datasetName = argv._[0] ? argv._[0] : 'From CLI ' + (new Date().toISOString());
+    mapbox.createDataset({name: datasetName}, function(err, dataset) {
         if (err) {
             throw err;
         }
