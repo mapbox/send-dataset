@@ -15,6 +15,7 @@ MAPBOX_ACCESS_TOKEN=<token> send-dataset < run.geojson
 
 Options:
 
+`--name 'Dataset Name' Use the provided dataset name instead of deriving it`
 `--print prints the url rather than opening it`
 `--print-id prints the Dataset ID rather than opening it`
 

@@ -50,7 +50,7 @@ function openData(body) {
         }
     });
 
-    var datasetName = argv._[0] ? path.basename(argv._[0], '.geojson') : 'From CLI ' + (new Date().toISOString());
+    var datasetName = argv.name ? argv.name : (argv._[0] ? path.basename(argv._[0], '.geojson') : 'From CLI ' + (new Date().toISOString()));
     mapbox.createDataset({name: datasetName}, function(err, dataset) {
         if (err) {
             throw err;
