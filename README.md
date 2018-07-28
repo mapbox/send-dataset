@@ -16,6 +16,7 @@ MAPBOX_ACCESS_TOKEN=<token> send-dataset < run.geojson
 Options:
 
 `--print prints the url rather than opening it`
+`--print-id prints the Dataset ID rather than opening it`
 
 ## installation
 

@@ -113,9 +113,13 @@ function killDataset(dataset, err) {
 };
 
 function displayResource(dataset) {
-    var ext = dataset.size < 160000000 ? '/edit' : '';
-    var url = 'https://www.mapbox.com/studio/datasets/'+ dataset.owner + '/' + dataset.id + ext;
-    (argv.print ? console.log : opener)(url);
+    if (argv['print-id']) {
+        console.log(dataset.id);
+    } else {
+        var ext = dataset.size < 160000000 ? '/edit' : '';
+        var url = 'https://www.mapbox.com/studio/datasets/'+ dataset.owner + '/' + dataset.id + ext;
+        (argv.print ? console.log : opener)(url);
+    }
 };
 
 function help() {
