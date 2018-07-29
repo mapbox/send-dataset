@@ -7,8 +7,8 @@ var path = require('path');
 var fs = require('fs');
 var MapboxClient = require('mapbox');
 var mapbox = new MapboxClient(process.env.MAPBOX_ACCESS_TOKEN);
-var geojsonhint = require('geojsonhint');
-var normalize = require('geojson-normalize');
+var geojsonhint = require('@mapbox/geojsonhint');
+var normalize = require('@mapbox/geojson-normalize');
 var hat = require('hat');
 var ProgressBar = require('progress');
 var queue = require('d3-queue').queue;
@@ -50,8 +50,8 @@ function openData(body) {
         }
     });
 
-    var datastName = argv._[0] ? argv._[0] : 'From CLI ' + (new Date().toISOString());
-    mapbox.createDataset({name: datastName}, function(err, dataset) {
+    var datasetName = argv.name ? argv.name : (argv._[0] ? path.basename(argv._[0], '.geojson') : 'From CLI ' + (new Date().toISOString()));
+    mapbox.createDataset({name: datasetName}, function(err, dataset) {
         if (err) {
             throw err;
         }
@@ -113,9 +113,13 @@ function killDataset(dataset, err) {
 };
 
 function displayResource(dataset) {
-    var ext = dataset.size < 160000000 ? '/edit' : '';
-    var url = 'http://mapbox.com/studio/datasets/'+ dataset.owner + '/' + dataset.id + ext;
-    (argv.print ? console.log : opener)(url);
+    if (argv['print-id']) {
+        console.log(dataset.id);
+    } else {
+        var ext = dataset.size < 160000000 ? '/edit' : '';
+        var url = 'https://www.mapbox.com/studio/datasets/'+ dataset.owner + '/' + dataset.id + ext;
+        (argv.print ? console.log : opener)(url);
+    }
 };
 
 function help() {
